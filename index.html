@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+    <meta charset="utf-8">
+    <title>中国地图着色问题</title>
+    <style>
+      html{
+        background-color: rgb(250, 244, 244);
+      }
+      html,body{
+        margin: 0;
+        padding: 0;
+      }
+      .centerItem {
+          width: 856px;
+          height: 640px;
+          background-color: #fff;
+          margin: 2px auto 0 auto;
+      }
+
+      .big {
+          width: 100px;
+          height: 100px;
+          background: rgba(18, 139, 237, 1);
+          /* background:rgba(71,169,241,1);                
+          background:rgba(165,216,246,1);
+          background:rgba(196,237,249,1); */
+      }
+      .show-color{
+        position: absolute;
+        bottom: 3%;
+        left: 46%;
+        width: 120px;
+        height: 40px;
+        line-height: 40px;
+        color: #413a3a;
+        font-size: 17px;
+        border-radius: 4px;
+        border: none;
+        outline: none;
+        background-color: #fcd1d1;
+      }
+    </style>
+</head>
+ 
+<body>
+    <!-- 中国地图展示 -->
+    <div id="mapBox" class="centerItem"></div>
+    <button class="show-color">地图着色展示</button>
+    <!-- <div class="big"></div> -->
+    <!-- 引入相关文件 -->
+    <script src="./js/jquery-1.11.1.min.js"></script>
+    <!-- 引入 ECharts 文件 -->
+    <script src="./js/echarts.min.js"></script>
+    <script src="./js/china.js"></script>
+ 
+    <script>
+        // 基于准备好的dom，初始化echarts实例
+        var mapBoxEchart = echarts.init(document.getElementById('mapBox'));
+        var num = Math.random(),
+            data = [
+                { name: '北京', selected: false, value: 1 },
+                { name: '天津', selected: false, value: 2 },
+                { name: '上海', selected: false, value: 3 },
+                { name: '重庆', selected: false, value: 4 },
+                { name: '河北', selected: false, value: 5 },
+                { name: '河南', selected: false, value: 6 },
+                { name: '云南', selected: false, value: 7 },
+                { name: '辽宁', selected: false, value: 8 },
+                { name: '黑龙江', selected: false, value: 9 },
+                { name: '湖南', selected: false, value: 10 },
+                { name: '安徽', selected: false, value: 11 },
+                { name: '山东', selected: false, value: 12 },
+                { name: '新疆', selected: false, value: 13 },
+                { name: '江苏', selected: false, value: 14 },
+                { name: '浙江', selected: false, value: 15 },
+                { name: '江西', selected: false, value: 16 },
+                { name: '湖北', selected: false, value: 17 },
+                { name: '广西', selected: false, value: 18 },
+                { name: '甘肃', selected: false, value: 19 },
+                { name: '山西', selected: false, value: 20 },
+                { name: '内蒙古', selected: false, value: 21 },
+                { name: '陕西', selected: false, value: 22 },
+                { name: '吉林', selected: false, value: 23 },
+                { name: '福建', selected: false, value: 24 },
+                { name: '贵州', selected: false, value: 25 },
+                { name: '广东', selected: false, value: 26 },
+                { name: '青海', selected: false, value: 27 },
+                { name: '西藏', selected: false, value: 28 },
+                { name: '四川', selected: false, value: 29 },
+                { name: '宁夏', selected: false, value: 30 },
+                { name: '海南', selected: false, value: 31 },
+                { name: '台湾', selected: false, value: 32 },
+                { name: '香港', selected: false, value: 33 },
+                { name: '澳门', selected: false, value: 34 }
+            ],
+            dataColor = {
+                x: '-1000 px', //图例横轴位置
+                y: '-1000 px', //图例纵轴位置
+                splitList: [
+                    { start: 1, end: 1, label: '北京', color: '#e2d7d7' },
+                    { start: 2, end: 2, label: '天津', color: '#e2d7d7' },
+                    { start: 3, end: 3, label: '上海', color: '#e2d7d7' },
+                    { start: 4, end: 4, label: '重庆', color: '#e2d7d7' },
+                    { start: 5, end: 5, label: '河北', color: '#e2d7d7' },
+                    { start: 6, end: 6, label: '河南', color: '#e2d7d7' },
+                    { start: 7, end: 7, label: '云南', color: '#e2d7d7' },
+                    { start: 8, end: 8, label: '辽宁', color: '#e2d7d7' },
+                    { start: 9, end: 9, label: '黑龙江', color: '#e2d7d7' },
+                    { start: 10, end: 10, label: '湖南', color: '#e2d7d7' },
+                    { start: 11, end: 11, label: '安徽', color: '#e2d7d7' },
+                    { start: 12, end: 12, label: '山东', color: '#e2d7d7' },
+                    { start: 13, end: 13, label: '新疆', color: '#e2d7d7' },
+                    { start: 14, end: 14, label: '江苏', color: '#e2d7d7' },
+                    { start: 15, end: 15, label: '浙江', color: '#e2d7d7' },
+                    { start: 16, end: 16, label: '江西', color: "#e2d7d7" },
+                    { start: 17, end: 17, label: '湖北', color: '#e2d7d7' },
+                    { start: 18, end: 18, label: '广西', color: '#e2d7d7' },
+                    { start: 19, end: 19, label: '甘肃', color: '#e2d7d7' },
+                    { start: 20, end: 20, label: '山西', color: '#e2d7d7' },
+                    { start: 21, end: 21, label: '内蒙古', color: '#e2d7d7' },
+                    { start: 22, end: 22, label: '陕西', color: '#e2d7d7' },
+                    { start: 23, end: 23, label: '吉林', color: '#e2d7d7' },
+                    { start: 24, end: 24, label: '福建', color: '#e2d7d7' },
+                    { start: 25, end: 25, label: '贵州', color: '#e2d7d7' },
+                    { start: 26, end: 26, label: '广东', color: '#e2d7d7' },
+                    { start: 27, end: 27, label: '青海', color: '#e2d7d7' },
+                    { start: 28, end: 28, label: '西藏', color: '#e2d7d7' },
+                    { start: 29, end: 29, label: '四川', color: '#e2d7d7' },
+                    { start: 30, end: 30, label: '宁夏', color: '#e2d7d7' },
+                    { start: 31, end: 31, label: '海南', color: '#e2d7d7' },
+                    { start: 32, end: 32, label: '台湾', color: '#e2d7d7' },
+                    { start: 33, end: 33, label: '香港', color: '#e2d7d7' },
+                    { start: 34, end: 34, label: '澳门', color: '#e2d7d7' }
+                ]
+            };
+        
+
+            //记录所有省市的相邻省市的信息
+            var city_vertex = [
+              {
+                vertex:[4,1],
+                number:0
+              },//北京 0
+              {
+                vertex:[0,4],
+                number:1
+              },//天津 1
+              {
+                vertex:[13,14],
+                number:2
+              },//上海 2
+              {
+                vertex:[21,24,16,9,28],
+                number:3
+              },//重庆 3
+              {
+                vertex:[0,1,11,5,19,20,7],
+                number:4
+              },//河北 4
+              {
+                vertex:[4,9,21,10,19,11],
+                number:5
+              },//河南 5
+              {
+                vertex:[28,27,24,17],
+                number:6
+              },//云南 6
+              {
+                vertex:[20,22,4],
+                number:7
+              },//辽宁 7
+              {
+                vertex:[20,22],
+                number:8
+              },//黑龙江 8
+              {
+                vertex:[15,3,24,25,16,17],
+                number:9
+              },//湖南 9
+              {
+                vertex:[14,15,5,11,15,16],
+                number:10
+              },//安徽 10 
+              {
+                vertex:[4,5,13,10],
+                number:11
+              },//山东 11
+              {
+                vertex:[27,18,26],
+                number:12
+              },//新疆 12
+              {
+                vertex:[11,5,10,14,2],
+                number:13
+              },//江苏 13
+              {
+                vertex:[15,2,13,23,10],
+                number:14
+              },//浙江 14
+              {
+                vertex:[14,23,10,16,9,25],
+                number:15
+              },//江西 15
+              {
+                vertex:[21,5,10,15,9,3],
+                number:16
+              },//湖北 16
+              {
+                vertex:[25,9,24,6],
+                number:17
+              },//广西 17
+              {
+                vertex:[21,12,26,28,29,20],
+                number:18
+              },//甘肃 18
+              {
+                vertex:[20,21,4,5,0],
+                number:19
+              },//山西 19
+              {
+                vertex:[8,22,7,4,19,29,18,21],
+                number:20
+              },//内蒙古 20
+              {
+                vertex:[19,5,16,3,28,18,29,20],
+                number:21
+              },//陕西 21
+              {
+                vertex:[20,7,8],
+                number:22
+              },//吉林 22
+              {
+                vertex:[14,15,25],
+                number:23
+              },//福建 23
+              {
+                vertex:[9,17,28,3,6],
+                number:24
+              },//贵州 24
+              {
+                vertex:[23,15,9,17],
+                number:25
+              },//广东 25
+              {
+                vertex:[27,12,18,28],
+                number:26
+              },//青海 26
+              {
+                vertex:[12,26,28,6],
+                number:27
+              },//西藏 27
+              {
+                vertex:[3,21,26,18,6,24,27],
+                number:28
+              },//四川 28
+              {
+                vertex:[21,20,18],
+                number:29
+              },//宁夏 29
+              {
+                vertex:[25],
+                number:30
+              },//海南 30
+              {
+                vertex:[23],
+                number:31
+              },//台湾 31 
+              {
+                vertex:[25],
+                number:32
+              },//香港 32
+              {
+                vertex:[25],
+                number:33
+              },//澳门 33
+            ];
+            
+            //将原始结点邻接数据保存一份
+            var copy_city_vertex = [];
+            for(var i = 0; i < city_vertex.length;i++){
+              copy_city_vertex.push({});
+              copy_city_vertex[i].vertex = city_vertex[i].vertex;
+              copy_city_vertex[i].number = city_vertex[i].number;
+            }
+
+            var coloredCity = [];
+            for(var i = 0; i < city_vertex.length; i++){
+              coloredCity.push(0)
+            }
+
+            //将所有的结点按照度数降序排列
+            function sort_cityNode(cityArr){
+              var vertex_len_arr = [];   //用于记录每个结点的度数
+              var flag = {};
+              for(var i = 0; i < cityArr.length; i++){
+                vertex_len_arr.push(cityArr[i].vertex.length);
+              }
+              for(var i = 0; i < vertex_len_arr.length;i++){
+                for(var j = 0; j < vertex_len_arr.length-i; j++){
+                  if(vertex_len_arr[j] < vertex_len_arr[j+1]){
+                    flag = cityArr[j];
+                    cityArr[j] =cityArr[j+1];
+                    cityArr[j+1] = flag;
+                    flag = vertex_len_arr[j];
+                    vertex_len_arr[j] =vertex_len_arr[j+1];
+                    vertex_len_arr[j+1] = flag;
+                  }
+                }
+              }
+              console.log('哈哈哈')
+              // console.log(vertex_len_arr);
+              // console.log(cityArr);
+              return cityArr;  //返回排过序的对象数组
+            }
+            
+
+        //判断地图上所有的结点是否已经全部着色，是返回true，否返回false
+        function judgeAllColored(){
+          var flag = true;
+          for(var i = 0; i < copy_city_vertex.length; i++){
+            if(!copy_city_vertex[i].colorCode){
+              flag = false;
+              return flag;
+            }
+          }
+          return flag;
+        }
+
+       
+
+        //给地图分配颜色
+        function getCityColor(){
+          var sorted_vertex = sort_cityNode(city_vertex);  //获取降序排序后的结点列表
+          var count = 0;
+          var colorCode = 1;
+          var code = 0;
+          var color_progress = []  //记录着色过程
+          while(count < sorted_vertex.length){
+            code = sorted_vertex[count].number;
+            //用第colorCode种颜色对第count个结点着色,并按照结点排列的次序。对与前面着色点不邻接的每一点着以相同颜色。
+            if(!copy_city_vertex[code].colorCode){
+              console.log("结点",code,"还未着色");
+              copy_city_vertex[code].colorCode = colorCode;
+              color_progress.push({
+                num:code,
+                colorCode:colorCode
+              })
+              //与当前着色结点不相邻，并且还没有着色，就涂上和当前结点一样的颜色
+              for(var k = 0; k < sorted_vertex.length;k++){
+                var key = true;
+                //当k等于了当前着色结点的序号、序号为k的结点已经着色了、序号为k的结点是当前结点的邻结点
+                if(k == code || copy_city_vertex[k].colorCode || copy_city_vertex[code].vertex.indexOf(k) != -1){
+                  continue;
+                }
+                //与k相邻的结点已经着了这个颜色了，那就不上色
+                for(var m = 0; m < copy_city_vertex[k].vertex.length;m++){
+                  if(copy_city_vertex[copy_city_vertex[k].vertex[m]].colorCode == colorCode){
+                    key = false;
+                    break;
+                  }
+                }
+                if(key){
+                  copy_city_vertex[k].colorCode = colorCode;
+                  color_progress.push({
+                    num:k,
+                    colorCode:colorCode
+                  })
+                }
+              }
+              colorCode++;
+              count++;
+            }else{
+              count++;
+            }
+            if(judgeAllColored()){
+              break;
+            }
+          }
+          console.log(copy_city_vertex);
+          return [colorCode,color_progress];
+        }
+
+        //Welch Powell 算法  在进行贪心算法前对结点按照其度数降序排列
+        //按排列顺序对与前面着色节点不邻接的每一节点着上同样的颜色
+        function getCityColor2(){
+          var sorted_vertex = sort_cityNode(city_vertex);  //获取降序排序后的结点列表
+          var count = 0;
+          var colorCode = 1;
+          var code = 0;
+          var color_progress = []  //记录着色过程
+          // console.log(sorted_vertex);
+          while(count < sorted_vertex.length){
+            code = sorted_vertex[count].number;
+            if(!copy_city_vertex[code].colorCode){
+              console.log("结点",code,"还未着色");
+              //给当前结点着色
+              copy_city_vertex[code].colorCode = colorCode;
+              color_progress.push({
+                num:code,
+                colorCode:colorCode
+              })
+              //按照排列顺序对与前面着色结点不邻接的每一个结点上同样的颜色
+              for(var k = count+1; k < sorted_vertex.length; k++){
+                 var node = sorted_vertex[k].number;
+                //  console.log(node);  
+                 var key = true;
+                 //依照排列顺序，如果结点邻接或已着色,就不管，否则着相同的颜色
+                 if(copy_city_vertex[code].vertex.indexOf(node) != -1 || copy_city_vertex[node].colorCode){
+                  //  console.log("node=",node,"不符合");
+                   continue;
+                 }
+                 //与k相邻的结点已经着了这个颜色了，那就不上色
+              for(var m = 0; m < copy_city_vertex[node].vertex.length;m++){
+                  if(copy_city_vertex[copy_city_vertex[node].vertex[m]].colorCode == colorCode){
+                    key = false;
+                    break;
+                  }
+                }
+                if(key){
+                  copy_city_vertex[node].colorCode = colorCode;
+                  color_progress.push({
+                    num:node,
+                    colorCode:colorCode
+                  })
+                }
+                 
+              }
+              colorCode++;
+              count++;
+            }else{
+              count++;
+            }
+            if(judgeAllColored()){
+              break;
+            }
+          }
+          console.log(color_progress);
+          return [colorCode,color_progress];
+        }
+        //对地图界面上色(一个颜色一个颜色的展示)
+        function pushColor(){
+          var colorNum = getCityColor2()[0] - 1;
+          var color_by_part = []; 
+          var colorFlag = 0; 
+          //创建二维数组，将不同颜色的城市编号放在一起，便于界面展示
+          for(var i = 0; i < colorNum; i++){
+            color_by_part[i] = []
+          }
+          color = ['red','yellow','green',"#fce8cd",'pink'];
+          for(var k = 0; k < copy_city_vertex.length; k++){
+            color_by_part[copy_city_vertex[k].colorCode-1].push(copy_city_vertex[k].number);
+          }
+          var timer = setInterval(function(){
+            console.log("进行了这部分");
+            for(var m = 0; m < color_by_part[colorFlag].length; m++){
+              console.log(color_by_part[colorFlag][m]);
+              dataColor.splitList[color_by_part[colorFlag][m]].color = color[colorFlag];
+            }
+            mapBoxEchart.setOption(mapBoxOption);
+            // echart图表自适应
+            window.addEventListener("resize", function () {
+                mapBoxEchart.resize();
+            });
+            colorFlag++;
+            if(colorFlag >= color_by_part.length){
+              clearInterval(timer);
+            }
+          },2500);
+        }
+
+        //对地图界面上色(按照着色顺序，一个省市一个省市的展现)
+        function pushColor2(){
+          var arr = getCityColor2();  //获取返回值 着色数以及省市着色路径
+          var colorNum = arr[0] - 1;   //着色数
+          var color_progress =arr[1];   //省市着色路径
+          var color_by_part = []; 
+          console.log(color_progress);
+          var colorFlag = 0; 
+          color = ['red','yellow','green',"#fce8cd",'pink'];
+          var timer = setInterval(function(){
+            console.log("进行了这部分");
+            dataColor.splitList[color_progress[colorFlag].num].color = color[color_progress[colorFlag].colorCode-1];
+            mapBoxEchart.setOption(mapBoxOption);
+            // echart图表自适应
+            window.addEventListener("resize", function () {
+                mapBoxEchart.resize();
+            });
+            colorFlag++;
+            if(colorFlag >= color_progress.length){
+              clearInterval(timer);
+            }
+          },500);
+        }
+
+        //给button添加点击事件
+        var show_button = document.getElementsByClassName('show-color')[0];
+        show_button.onclick = pushColor2;
+       
+        var mapBoxOption = {
+          
+            series: [{
+                type: 'map',
+                mapType: 'china',
+                label: {
+                    normal: {
+                        show: true, //显示省份标签
+                        textStyle: {
+                            color: "#1e1e1e"
+                        } //省份标签字体颜色
+                    }
+                },
+                aspectScale: 0.75,
+                zoom: 1.2,
+                itemStyle: {
+                    normal: {
+                        borderWidth: .5, //区域边框宽度
+                        borderColor: '#009fe8', //区域边框颜色
+                        areaColor: "#ffefd5", //区域颜色
+                    }
+                },
+                data: data //各省地图颜色数据依赖value
+            }],
+            dataRange: dataColor, //各省地图颜色；start：值域开始值；end：值域结束值；label：图例名称；color：自定义颜色值；
+        };
+        // 使用制定的配置项和数据显示图表
+        mapBoxEchart.setOption(mapBoxOption);
+        // echart图表自适应
+        window.addEventListener("resize", function () {
+            mapBoxEchart.resize();
+        });
+
+
+      
+    </script>
+ 
+</body>
+ 
+</html>
